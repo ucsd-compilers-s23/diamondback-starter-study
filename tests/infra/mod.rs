@@ -147,12 +147,15 @@ fn check_error_msg(found: &str, expected: &str) {
     );
 }
 
-fn diff(expected: &str, actual_output: String) {
-    let expected_output = expected.trim();
-    if expected_output != actual_output {
+fn diff(expected: &str, found: String) {
+    let expected = expected.trim();
+
+    let expected_lines: Vec<&str> = expected.lines().collect();
+    let actual_lines: Vec<&str> = found.lines().collect();
+    if expected_lines != actual_lines {
         eprintln!(
             "output differed!\n{}",
-            prettydiff::diff_lines(&actual_output, expected_output)
+            prettydiff::diff_lines(&found, expected)
         );
         panic!("test failed");
     }
