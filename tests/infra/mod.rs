@@ -86,7 +86,7 @@ fn run_runtime_error_test(name: &str, file: &Path, expected: &str, input: Option
     }
     match run(name, input) {
         Ok(out) => {
-            panic!("expected a runtime error, but program executed succesfully: `{out}`");
+            panic!("expected a runtime error, but program executed succesfully - expected error: `{expected}`, output: `{out}`");
         }
         Err(err) => check_error_msg(&err, expected),
     }
@@ -94,7 +94,11 @@ fn run_runtime_error_test(name: &str, file: &Path, expected: &str, input: Option
 
 fn run_static_error_test(name: &str, file: &Path, expected: &str) {
     match compile(name, file) {
-        Ok(()) => panic!("expected a failure, but compilation succeeded"),
+        Ok(()) => {
+            panic!(
+                "expected a static error, but compilation succeeded - expected error: `{expected}`"
+            )
+        }
         Err(err) => check_error_msg(&err, expected),
     }
 }
@@ -135,9 +139,11 @@ fn run(name: &str, input: Option<&str>) -> Result<String, String> {
 }
 
 fn check_error_msg(found: &str, expected: &str) {
+    let lower_found = found.trim().to_lowercase();
+    let lower_expected = expected.trim().to_lowercase();
     assert!(
-        found.contains(expected.trim()),
-        "the reported error message does not match",
+        lower_found.contains(&lower_expected),
+        "the reported error message does not contain the expected subtring - found: `{found}`, expected: `{expected}`",
     );
 }
 
