@@ -24,4 +24,10 @@ success_tests! {
 
 runtime_error_tests! {}
 
-static_error_tests! {}
+static_error_tests! {
+    {
+        name: duplicate_params,
+        file: "duplicate_params.snek",
+        expected: "",
+    }
+}
